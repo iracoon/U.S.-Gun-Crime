@@ -24,18 +24,20 @@ interface TrendsToolState {
 class TrendsTool extends React.Component<TrendsToolProps, TrendsToolState> {
   public constructor(props: TrendsToolProps) {
     super(props);
+    states.unshift('All..');
     this.state = {
-      genders: ['Male', 'Female'],
+      genders: ['All..', 'Male', 'Female'],
       gender: 'Male',
       ageGroup: 'Ages 10–18',
       ageGroups: [
+        'All..',
         'Ages 0–9',
         'Ages 10–18',
         'Ages 19–25',
         'Ages 26–64',
         'Ages 65+',
       ],
-      state: states[0],
+      state: states[1],
       isLoading: true,
       data: {
         labels: [],
