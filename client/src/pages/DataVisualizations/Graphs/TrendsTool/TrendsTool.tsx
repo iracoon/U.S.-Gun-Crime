@@ -15,6 +15,8 @@ interface TrendsToolState {
   state: string;
   gender: string;
   genders: string[];
+  ageGroup: string;
+  ageGroups: string[];
   isLoading: boolean;
   data: ChartData<chartjs.ChartData>;
 }
@@ -25,6 +27,14 @@ class TrendsTool extends React.Component<TrendsToolProps, TrendsToolState> {
     this.state = {
       genders: ['Male', 'Female'],
       gender: 'Male',
+      ageGroup: 'Ages 10–18',
+      ageGroups: [
+        'Ages 0–9',
+        'Ages 10–18',
+        'Ages 19–25',
+        'Ages 26–64',
+        'Ages 65+',
+      ],
       state: states[0],
       isLoading: true,
       data: {
@@ -99,6 +109,7 @@ class TrendsTool extends React.Component<TrendsToolProps, TrendsToolState> {
   public render() {
     const { state } = this.state;
     const { gender } = this.state;
+    const { ageGroup } = this.state;
     return (
       <section className={this.props.className}>
         <Card title="Trends Tool">
@@ -122,6 +133,18 @@ class TrendsTool extends React.Component<TrendsToolProps, TrendsToolState> {
               style={{ width: 150 }}
             >
               {this.state.genders.map((item, index) => (
+                <Select.Option value={item} key={`${index}1`}>
+                  {item}
+                </Select.Option>
+              ))}
+            </Select>
+            &nbsp;&nbsp;
+            <Select
+              defaultValue={ageGroup}
+              showSearch={true}
+              style={{ width: 150 }}
+            >
+              {this.state.ageGroups.map((item, index) => (
                 <Select.Option value={item} key={`${index}1`}>
                   {item}
                 </Select.Option>
