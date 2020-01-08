@@ -3,6 +3,7 @@ import Page from 'components/Layout/Page/Page';
 import { PageEnum } from 'pages/PageEnum';
 import NationalTrends from './Graphs/NationalTrends';
 import StateComparisons from './Graphs/StateComparisons/StateComparisons';
+import TrendsTool from './Graphs/TrendsTool/TrendsTool';
 import { Collapse, Switch, Card, Alert } from 'antd';
 import styles from './DataVisualizations.module.less';
 import CrimesByGender from './Graphs/CrimesByGender';
@@ -67,6 +68,8 @@ const DataVisualizations = () => {
           <h2>Gun Crime Trends</h2>
           <StateComparisons className={styles.dataVisualization} />
 
+          <TrendsTool className={styles.dataVisualization} />
+
           <Card title="National Gun Deaths by Year">
             <div className={styles.responsiveCard}>
               <NationalTrends />
@@ -92,8 +95,8 @@ const DataVisualizations = () => {
                   years, the number of gun death caused by males is
                   unproportionally higher, with men accounting for roughly 85
                   percent of the total gun-related crimes in the United States.
-                  According to the gun crime data, males aged 26-64 are
-                  most likely to commit gun-related crimes.
+                  According to the gun crime data, males aged 26-64 are most
+                  likely to commit gun-related crimes.
                 </div>
                 <CrimesByGender />
                 <ParticipantAgeDistribution type="victim" />

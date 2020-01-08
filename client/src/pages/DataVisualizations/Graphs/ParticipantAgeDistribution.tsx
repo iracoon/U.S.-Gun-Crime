@@ -55,8 +55,6 @@ class ParticipantAgeDistribution extends React.Component<
 
       const participantAgeDistributionData: number[] = [];
 
-      console.log(response.data);
-
       response.data.forEach(
         (p: {
           GROUP1: number;
