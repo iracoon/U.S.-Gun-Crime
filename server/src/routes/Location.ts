@@ -2,7 +2,13 @@ import { logger } from '@shared';
 import { Request, Response, Router } from 'express';
 import { BAD_REQUEST, OK } from 'http-status-codes';
 import query from 'src/query/query';
-import { Location, Incident, StatePopulation, Participant } from 'src/table';
+import {
+  Location,
+  Incident,
+  StatePopulation,
+  Participant,
+  Gun,
+} from 'src/table';
 
 // Init shared
 const router = Router();
@@ -72,18 +78,44 @@ router.get(
   async (req: Request, res: Response) => {
     try {
       const deathsPerYear = await query(
-        `SELECT sum(n_killed) AS DEATHS
-      FROM ${Incident}, ${Location}, ${Participant}
+        `SELECT sum(n_killed) AS DEATHS FROM
+      ((SELECT * FROM ${Incident}, ${Location}, ${Participant}
       WHERE 
       (${Incident}.latitude = ${Location}.latitude
       AND ${Incident}.longitude = ${Location}.longitude
       AND ${Incident}.id = ${Participant}.incident_id
-      AND '${req.params.state}' IS NULL)
+      AND ${req.params.state} IS NULL)
       OR 
       (${Incident}.latitude = ${Location}.latitude
       AND ${Incident}.longitude = ${Location}.longitude
       AND ${Incident}.id = ${Participant}.incident_id
-      AND State = '${req.params.state}')
+      AND state = ${req.params.state}))
+      INTERSECT
+      (SELECT * FROM ${Incident}, ${Location}, ${Participant}
+      WHERE 
+      (${Incident}.latitude = ${Location}.latitude
+      AND ${Incident}.longitude = ${Location}.longitude
+      AND ${Incident}.id = ${Participant}.incident_id
+      AND ${req.params.gender} IS NULL)
+      OR 
+      (${Incident}.latitude = ${Location}.latitude
+      AND ${Incident}.longitude = ${Location}.longitude
+      AND ${Incident}.id = ${Participant}.incident_id
+      AND gender = ${req.params.gender}))
+      INTERSECT
+      (SELECT * FROM ${Incident}, ${Location}, ${Participant}
+      WHERE 
+      (${Incident}.latitude = ${Location}.latitude
+      AND ${Incident}.longitude = ${Location}.longitude
+      AND ${Incident}.id = ${Participant}.incident_id
+      AND ${req.params.age_low} IS NULL
+      AND ${req.params.age_high} IS NULL)
+      OR 
+      (${Incident}.latitude = ${Location}.latitude
+      AND ${Incident}.longitude = ${Location}.longitude
+      AND ${Incident}.id = ${Participant}.incident_id
+      AND age >= ${req.params.age_low}
+      AND age <= ${req.params.age_high})))
       GROUP BY extract(year FROM i_date)
       ORDER BY extract(year FROM i_date) ASC`
       );
