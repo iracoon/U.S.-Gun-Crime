@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { Line, ChartData } from 'react-chartjs-2';
-import { Card } from 'antd';
+import { Card, Button } from 'antd';
 import { Select } from 'antd';
 import states from '../StateComparisons/states';
 import LoadingSpin from '../../../../components/LoadingSpin/LoadingSpin';
@@ -118,7 +118,6 @@ class TrendsTool extends React.Component<TrendsToolProps, TrendsToolState> {
           <div style={{ marginBottom: '20px' }}>
             <Select
               defaultValue={state}
-              onChange={this.onStateChange}
               showSearch={true}
               style={{ width: 150 }}
             >
@@ -152,6 +151,15 @@ class TrendsTool extends React.Component<TrendsToolProps, TrendsToolState> {
                 </Select.Option>
               ))}
             </Select>
+            <br />
+            <br />
+            <Button type="primary" size="large" shape="round">
+              Killed
+            </Button>
+            &nbsp;&nbsp;
+            <Button type="primary" size="large" shape="round">
+              Injured
+            </Button>
           </div>
           <LoadingSpin spinning={this.state.isLoading}>
             <Line

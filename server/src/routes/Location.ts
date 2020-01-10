@@ -2,7 +2,7 @@ import { logger } from '@shared';
 import { Request, Response, Router } from 'express';
 import { BAD_REQUEST, OK } from 'http-status-codes';
 import query from 'src/query/query';
-import { Location, Incident, StatePopulation } from 'src/table';
+import { Location, Incident, StatePopulation, Participant } from 'src/table';
 
 // Init shared
 const router = Router();
@@ -63,6 +63,39 @@ router.get('/:state/deathsPerYear', async (req: Request, res: Response) => {
     });
   }
 });
+
+/**
+ * Trends Tool
+ */
+router.get(
+  '/:state/:age_low/:age_high/:gender/trends',
+  async (req: Request, res: Response) => {
+    try {
+      const deathsPerYear = await query(
+        `SELECT sum(n_killed) AS DEATHS
+      FROM ${Incident}, ${Location}, ${Participant}
+      WHERE 
+      (${Incident}.latitude = ${Location}.latitude
+      AND ${Incident}.longitude = ${Location}.longitude
+      AND ${Incident}.id = ${Participant}.incident_id
+      AND '${req.params.state}' IS NULL)
+      OR 
+      (${Incident}.latitude = ${Location}.latitude
+      AND ${Incident}.longitude = ${Location}.longitude
+      AND ${Incident}.id = ${Participant}.incident_id
+      AND State = '${req.params.state}')
+      GROUP BY extract(year FROM i_date)
+      ORDER BY extract(year FROM i_date) ASC`
+      );
+      return res.status(OK).json(deathsPerYear);
+    } catch (err) {
+      logger.error(err.message, err);
+      return res.status(BAD_REQUEST).json({
+        error: err.message,
+      });
+    }
+  }
+);
 
 /**
  * Ranks the states by death per capita (scaled up).
