@@ -12,6 +12,7 @@ interface TrendsToolProps {
 }
 
 interface TrendsToolState {
+  type: string;
   state: string;
   states_copy: string[];
   gender: string;
@@ -28,6 +29,7 @@ class TrendsTool extends React.Component<TrendsToolProps, TrendsToolState> {
     super(props);
     this.state = {
       states_copy: states.slice(),
+      type: 'n_killed',
       genders: ['All..', 'Male', 'Female'],
       gender: "'M'",
       age_low: '10',
@@ -65,7 +67,7 @@ class TrendsTool extends React.Component<TrendsToolProps, TrendsToolState> {
   private fetchTrendsToolData = async () => {
     try {
       const response = await axios.get(
-        `/api/location/${this.state.state}/${this.state.age_low}/${this.state.age_high}/${this.state.gender}/trends`
+        `/api/location/${this.state.state}/${this.state.age_low}/${this.state.age_high}/${this.state.gender}/${this.state.type}/trends`
       );
 
       const deathsPerYear: number[] = [];
@@ -92,8 +94,9 @@ class TrendsTool extends React.Component<TrendsToolProps, TrendsToolState> {
     }
   };
 
-  public onButtonClick = () => {
+  public onButtonClick = (value: string) => {
     this.setState({
+      type: value,
       isLoading: true,
     });
     this.fetchTrendsToolData();
@@ -203,7 +206,7 @@ class TrendsTool extends React.Component<TrendsToolProps, TrendsToolState> {
             <br />
             <br />
             <Button
-              onClick={() => this.onButtonClick()}
+              onClick={() => this.onButtonClick('n_killed')}
               type="primary"
               size="large"
               shape="round"
@@ -212,7 +215,7 @@ class TrendsTool extends React.Component<TrendsToolProps, TrendsToolState> {
             </Button>
             &nbsp;&nbsp;
             <Button
-              onClick={() => this.onButtonClick()}
+              onClick={() => this.onButtonClick('n_injured')}
               type="primary"
               size="large"
               shape="round"

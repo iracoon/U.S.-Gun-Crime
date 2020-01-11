@@ -74,11 +74,11 @@ router.get('/:state/deathsPerYear', async (req: Request, res: Response) => {
  * Trends Tool
  */
 router.get(
-  '/:state/:age_low/:age_high/:gender/trends',
+  '/:state/:age_low/:age_high/:gender/:type/trends',
   async (req: Request, res: Response) => {
     try {
       const deathsPerYear = await query(
-        `SELECT sum(n_killed) AS DEATHS FROM
+        `SELECT sum(${req.params.type}) AS DEATHS FROM
       ((SELECT * FROM ${Incident}, ${Location}, ${Participant}
       WHERE 
       (${Incident}.latitude = ${Location}.latitude
