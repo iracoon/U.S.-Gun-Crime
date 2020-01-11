@@ -4,13 +4,14 @@ import { PageEnum } from 'pages/PageEnum';
 import NationalTrends from './Graphs/NationalTrends';
 import StateComparisons from './Graphs/StateComparisons/StateComparisons';
 import TrendsTool from './Graphs/TrendsTool/TrendsTool';
-import { Collapse, Switch, Card, Alert } from 'antd';
+import { Collapse, Switch, Card, Alert, Tabs } from 'antd';
 import styles from './DataVisualizations.module.less';
 import CrimesByGender from './Graphs/CrimesByGender';
 import CrimesByGunStolen from './Graphs/CrimesByGunStolen';
 import ParticipantAgeDistribution from './Graphs/ParticipantAgeDistribution';
 
 const { Panel } = Collapse;
+const { TabPane } = Tabs;
 
 const DataVisualizations = () => {
   const [showingTrends, setShowingTrends] = useState<boolean>(true);
@@ -66,9 +67,14 @@ const DataVisualizations = () => {
       {showingTrends ? (
         <section className={styles.dataVisualization}>
           <h2>Gun Crime Trends</h2>
-          <StateComparisons className={styles.dataVisualization} />
-
-          <TrendsTool className={styles.dataVisualization} />
+          <Tabs defaultActiveKey="1">
+            <TabPane tab="Deaths Per Capita by State" key="1">
+              <TrendsTool className={styles.dataVisualization} />
+            </TabPane>
+            <TabPane tab="Deadliest Incidents" key="2">
+              <StateComparisons className={styles.dataVisualization} />
+            </TabPane>
+          </Tabs>
 
           <Card title="National Gun Deaths by Year">
             <div className={styles.responsiveCard}>

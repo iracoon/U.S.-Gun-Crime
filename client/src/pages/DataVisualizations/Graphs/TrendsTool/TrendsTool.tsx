@@ -32,8 +32,8 @@ class TrendsTool extends React.Component<TrendsToolProps, TrendsToolState> {
       type: 'n_killed',
       genders: ['All..', 'Male', 'Female'],
       gender: "'M'",
-      age_low: '10',
-      age_high: '18',
+      age_low: '19',
+      age_high: '25',
       ageGroups: [
         'All..',
         'Ages 0–9',
@@ -42,7 +42,7 @@ class TrendsTool extends React.Component<TrendsToolProps, TrendsToolState> {
         'Ages 26–64',
         'Ages 65+',
       ],
-      state: "'Alabama'",
+      state: "'California'",
       isLoading: true,
       data: {
         labels: [],
@@ -82,7 +82,7 @@ class TrendsTool extends React.Component<TrendsToolProps, TrendsToolState> {
           labels: ['2013', '2014', '2015', '2016', '2017', '2018'],
           datasets: [
             {
-              label: 'Gun deaths by year in ' + this.state.state,
+              label: 'Gun Crime Trends',
               backgroundColor: 'rgba(247, 143, 76, 0.2)',
               data: deathsPerYear,
             },
@@ -193,7 +193,7 @@ class TrendsTool extends React.Component<TrendsToolProps, TrendsToolState> {
             &nbsp;&nbsp;
             <Select
               onChange={this.onAgeChange}
-              defaultValue={'Ages 10–18'}
+              defaultValue={'Ages 19–25'}
               showSearch={true}
               style={{ width: 150 }}
             >
