@@ -13,6 +13,7 @@ interface TrendsToolProps {
 
 interface TrendsToolState {
   state: string;
+  states_copy: string[];
   gender: string;
   genders: string[];
   ageGroup: string;
@@ -24,8 +25,8 @@ interface TrendsToolState {
 class TrendsTool extends React.Component<TrendsToolProps, TrendsToolState> {
   public constructor(props: TrendsToolProps) {
     super(props);
-    states.unshift('All..');
     this.state = {
+      states_copy: states.slice(),
       genders: ['All..', 'Male', 'Female'],
       gender: 'Male',
       ageGroup: 'Ages 10–18',
@@ -50,6 +51,9 @@ class TrendsTool extends React.Component<TrendsToolProps, TrendsToolState> {
         ],
       },
     };
+    if (!this.state.states_copy.includes('All..')) {
+      this.state.states_copy.unshift('All..');
+    }
   }
 
   public componentDidMount() {
@@ -121,7 +125,7 @@ class TrendsTool extends React.Component<TrendsToolProps, TrendsToolState> {
               showSearch={true}
               style={{ width: 150 }}
             >
-              {states.map((item, index) => (
+              {this.state.states_copy.map((item, index) => (
                 <Select.Option value={item} key={`${index}1`}>
                   {item}
                 </Select.Option>
