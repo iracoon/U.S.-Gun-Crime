@@ -38,7 +38,7 @@ class TrendsTool extends React.Component<TrendsToolProps, TrendsToolState> {
         'Ages 26–64',
         'Ages 65+',
       ],
-      state: states[0],
+      state: "'Alabama'",
       isLoading: true,
       data: {
         labels: [],
@@ -62,13 +62,13 @@ class TrendsTool extends React.Component<TrendsToolProps, TrendsToolState> {
 
   private fetchTrendsToolData = async () => {
     try {
-      const response1 = await axios.get(
-        `/api/location/${this.state.state}/deathsPerYear`
+      const response = await axios.get(
+        `/api/location/${this.state.state}/10/18/'M'/trends`
       );
 
-      const deathsPerYear1: number[] = [];
-      response1.data.forEach((p: { DEATHS: number }) =>
-        deathsPerYear1.push(p.DEATHS)
+      const deathsPerYear: number[] = [];
+      response.data.forEach((p: { DEATHS: number }) =>
+        deathsPerYear.push(p.DEATHS)
       );
 
       this.setState({
@@ -80,7 +80,7 @@ class TrendsTool extends React.Component<TrendsToolProps, TrendsToolState> {
             {
               label: 'Gun deaths by year in ' + this.state.state,
               backgroundColor: 'rgba(247, 143, 76, 0.2)',
-              data: deathsPerYear1,
+              data: deathsPerYear,
             },
           ],
         },
@@ -90,7 +90,7 @@ class TrendsTool extends React.Component<TrendsToolProps, TrendsToolState> {
     }
   };
 
-  public onButtonClick = (value: string) => {
+  public onButtonClick = () => {
     this.setState({
       isLoading: true,
     });
@@ -98,13 +98,30 @@ class TrendsTool extends React.Component<TrendsToolProps, TrendsToolState> {
   };
 
   public onStateChange = (value: string) => {
+    if (value === 'All..') {
+      this.setState({
+        state: 'NULL',
+      });
+    } else {
+      this.setState({
+        state: "'" + value + "'",
+      });
+    }
+  };
+
+  public onGenderChange = (value: string) => {
+    this.setState({
+      state: value,
+    });
+  };
+
+  public onAgeChange = (value: string) => {
     this.setState({
       state: value,
     });
   };
 
   public render() {
-    const { state } = this.state;
     const { gender } = this.state;
     const { ageGroup } = this.state;
     return (
@@ -113,7 +130,7 @@ class TrendsTool extends React.Component<TrendsToolProps, TrendsToolState> {
           <div style={{ marginBottom: '20px' }}>
             <Select
               onChange={this.onStateChange}
-              defaultValue={state}
+              defaultValue={'Alabama'}
               showSearch={true}
               style={{ width: 150 }}
             >
@@ -150,7 +167,7 @@ class TrendsTool extends React.Component<TrendsToolProps, TrendsToolState> {
             <br />
             <br />
             <Button
-              onClick={() => this.onButtonClick(this.state.state)}
+              onClick={() => this.onButtonClick()}
               type="primary"
               size="large"
               shape="round"
@@ -159,7 +176,7 @@ class TrendsTool extends React.Component<TrendsToolProps, TrendsToolState> {
             </Button>
             &nbsp;&nbsp;
             <Button
-              onClick={() => this.onButtonClick(this.state.state)}
+              onClick={() => this.onButtonClick()}
               type="primary"
               size="large"
               shape="round"
