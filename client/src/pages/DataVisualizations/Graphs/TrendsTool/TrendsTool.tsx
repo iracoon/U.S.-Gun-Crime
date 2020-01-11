@@ -16,7 +16,8 @@ interface TrendsToolState {
   states_copy: string[];
   gender: string;
   genders: string[];
-  ageGroup: string;
+  age_low: string;
+  age_high: string;
   ageGroups: string[];
   isLoading: boolean;
   data: ChartData<chartjs.ChartData>;
@@ -28,8 +29,9 @@ class TrendsTool extends React.Component<TrendsToolProps, TrendsToolState> {
     this.state = {
       states_copy: states.slice(),
       genders: ['All..', 'Male', 'Female'],
-      gender: 'Male',
-      ageGroup: 'Ages 10–18',
+      gender: "'M'",
+      age_low: '10',
+      age_high: '18',
       ageGroups: [
         'All..',
         'Ages 0–9',
@@ -63,7 +65,7 @@ class TrendsTool extends React.Component<TrendsToolProps, TrendsToolState> {
   private fetchTrendsToolData = async () => {
     try {
       const response = await axios.get(
-        `/api/location/${this.state.state}/10/18/'M'/trends`
+        `/api/location/${this.state.state}/${this.state.age_low}/${this.state.age_high}/${this.state.gender}/trends`
       );
 
       const deathsPerYear: number[] = [];
@@ -110,20 +112,52 @@ class TrendsTool extends React.Component<TrendsToolProps, TrendsToolState> {
   };
 
   public onGenderChange = (value: string) => {
-    this.setState({
-      state: value,
-    });
+    if (value === 'All..') {
+      this.setState({
+        gender: 'NULL',
+      });
+    } else {
+      this.setState({
+        gender: "'" + value[0] + "'",
+      });
+    }
   };
 
   public onAgeChange = (value: string) => {
-    this.setState({
-      state: value,
-    });
+    if (value === 'All..') {
+      this.setState({
+        age_low: 'NULL',
+        age_high: 'NULL',
+      });
+    } else if (value === 'Ages 0–9') {
+      this.setState({
+        age_low: '0',
+        age_high: '9',
+      });
+    } else if (value === 'Ages 10–18') {
+      this.setState({
+        age_low: '10',
+        age_high: '18',
+      });
+    } else if (value === 'Ages 19–25') {
+      this.setState({
+        age_low: '19',
+        age_high: '25',
+      });
+    } else if (value === 'Ages 26–64') {
+      this.setState({
+        age_low: '26',
+        age_high: '64',
+      });
+    } else if (value === 'Ages 65+') {
+      this.setState({
+        age_low: '65',
+        age_high: '110',
+      });
+    }
   };
 
   public render() {
-    const { gender } = this.state;
-    const { ageGroup } = this.state;
     return (
       <section className={this.props.className}>
         <Card title="Trends Tool">
@@ -142,7 +176,8 @@ class TrendsTool extends React.Component<TrendsToolProps, TrendsToolState> {
             </Select>
             &nbsp;&nbsp;
             <Select
-              defaultValue={gender}
+              onChange={this.onGenderChange}
+              defaultValue={'Male'}
               showSearch={true}
               style={{ width: 150 }}
             >
@@ -154,7 +189,8 @@ class TrendsTool extends React.Component<TrendsToolProps, TrendsToolState> {
             </Select>
             &nbsp;&nbsp;
             <Select
-              defaultValue={ageGroup}
+              onChange={this.onAgeChange}
+              defaultValue={'Ages 10–18'}
               showSearch={true}
               style={{ width: 150 }}
             >
