@@ -38,7 +38,7 @@ class TrendsTool extends React.Component<TrendsToolProps, TrendsToolState> {
         'Ages 26–64',
         'Ages 65+',
       ],
-      state: states[1],
+      state: states[0],
       isLoading: true,
       data: {
         labels: [],
@@ -90,26 +90,17 @@ class TrendsTool extends React.Component<TrendsToolProps, TrendsToolState> {
     }
   };
 
+  public onButtonClick = (value: string) => {
+    this.setState({
+      isLoading: true,
+    });
+    this.fetchTrendsToolData();
+  };
+
   public onStateChange = (value: string) => {
-    this.setState(
-      {
-        state: value,
-        isLoading: true,
-        data: {
-          labels: [],
-          datasets: [
-            {
-              label: '',
-              backgroundColor: '',
-              data: [],
-            },
-          ],
-        },
-      },
-      () => {
-        this.fetchTrendsToolData();
-      }
-    );
+    this.setState({
+      state: value,
+    });
   };
 
   public render() {
@@ -121,6 +112,7 @@ class TrendsTool extends React.Component<TrendsToolProps, TrendsToolState> {
         <Card title="Trends Tool">
           <div style={{ marginBottom: '20px' }}>
             <Select
+              onChange={this.onStateChange}
               defaultValue={state}
               showSearch={true}
               style={{ width: 150 }}
@@ -157,11 +149,21 @@ class TrendsTool extends React.Component<TrendsToolProps, TrendsToolState> {
             </Select>
             <br />
             <br />
-            <Button type="primary" size="large" shape="round">
+            <Button
+              onClick={() => this.onButtonClick(this.state.state)}
+              type="primary"
+              size="large"
+              shape="round"
+            >
               Killed
             </Button>
             &nbsp;&nbsp;
-            <Button type="primary" size="large" shape="round">
+            <Button
+              onClick={() => this.onButtonClick(this.state.state)}
+              type="primary"
+              size="large"
+              shape="round"
+            >
               Injured
             </Button>
           </div>
@@ -171,7 +173,7 @@ class TrendsTool extends React.Component<TrendsToolProps, TrendsToolState> {
                 responsive: true,
               }}
               data={this.state.data}
-              redraw={true}
+              redraw={false}
             />
           </LoadingSpin>
         </Card>
