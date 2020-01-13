@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { Line, ChartData, Bar } from 'react-chartjs-2';
-import { primaryBlue } from '../chartColors';
+import { primaryBlue, darkBlue, lightBlue, golden } from '../chartColors';
 import LoadingSpin from '../../../components/LoadingSpin/LoadingSpin';
 import * as chartjs from 'chart.js';
 
@@ -55,25 +55,6 @@ class GunDeaths extends React.Component<{}, GunDeathsState> {
         )
       );
 
-      //   const participantAgeDistributionData: number[] = [];
-
-      //   response.data.forEach(
-      //     (p: {
-      //       GROUP1: number;
-      //       GROUP2: number;
-      //       GROUP3: number;
-      //       GROUP4: number;
-      //       GROUP5: number;
-      //     }) =>
-      //       participantAgeDistributionData.push(
-      //         p.GROUP1,
-      //         p.GROUP2,
-      //         p.GROUP3,
-      //         p.GROUP4,
-      //         p.GROUP5
-      //       )
-      //   );
-
       this.setState({
         ...this.state,
         isLoading: false,
@@ -81,19 +62,19 @@ class GunDeaths extends React.Component<{}, GunDeathsState> {
           labels: gunNames,
           datasets: [
             {
-              label: 'Low',
+              label: 'unknown',
               data: nullKilled,
-              backgroundColor: '#D6E9C6', // green
+              backgroundColor: darkBlue,
             },
             {
-              label: 'Moderate',
+              label: 'gun deaths caused by stolen guns',
               data: stolenKilled,
-              backgroundColor: '#FAEBCC', // yellow
+              backgroundColor: lightBlue,
             },
             {
-              label: 'High',
+              label: 'gun deaths caused by legal guns',
               data: legalKilled,
-              backgroundColor: '#EBCCD1', // red
+              backgroundColor: golden,
             },
           ],
         },
@@ -113,9 +94,6 @@ class GunDeaths extends React.Component<{}, GunDeathsState> {
               scales: {
                 xAxes: [{ stacked: true }],
                 yAxes: [{ stacked: true }],
-              },
-              legend: {
-                display: false,
               },
             }}
             data={this.state.data}

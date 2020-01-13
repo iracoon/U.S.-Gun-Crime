@@ -81,7 +81,6 @@ class GeographicDistribution extends React.Component<
   public render() {
     return (
       <Page title={PageEnum.GEOGRAPHIC_DISTRIBUTION.title}>
-        <p>Disclaimer: Some data is missing from the years 2013 and 2018.</p>
         <section
           style={{
             display: 'flex',
@@ -159,6 +158,8 @@ class GeographicDistribution extends React.Component<
             </ZoomableGroup>
           </ComposableMap>
         </LoadingOverlay>
+        <br />
+        <p>*Disclaimer: Some data is missing from the years 2013 and 2018.</p>
       </Page>
     );
   }

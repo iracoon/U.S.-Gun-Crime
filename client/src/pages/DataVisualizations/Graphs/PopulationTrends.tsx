@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { Line, ChartData } from 'react-chartjs-2';
-import { primaryBlue } from '../chartColors';
+import { darkgreen } from '../chartColors';
 import LoadingSpin from '../../../components/LoadingSpin/LoadingSpin';
 import * as chartjs from 'chart.js';
 
@@ -52,8 +52,8 @@ class PopulationTrends extends React.Component<{}, PopulationTrendsState> {
           labels: ['2013', '2014', '2015', '2016', '2017', '2018'],
           datasets: [
             {
-              label: '',
-              backgroundColor: primaryBlue,
+              label: 'Population by year nationally',
+              backgroundColor: darkgreen,
               data: PopulationTrendsData,
             },
           ],
@@ -71,10 +71,6 @@ class PopulationTrends extends React.Component<{}, PopulationTrendsState> {
           <Line
             options={{
               responsive: true,
-
-              legend: {
-                display: false,
-              },
             }}
             data={this.state.data}
           />

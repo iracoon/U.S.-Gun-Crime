@@ -1,7 +1,15 @@
 import React from 'react';
 import axios from 'axios';
 import { Doughnut, ChartData } from 'react-chartjs-2';
-import { orange, fadedRed, darkPink } from '../chartColors';
+import {
+  orange,
+  fadedRed,
+  darkPink,
+  darkBlue,
+  golden,
+  primaryBlue,
+  lightBlue,
+} from '../chartColors';
 import LoadingSpin from 'components/LoadingSpin/LoadingSpin';
 import * as chartjs from 'chart.js';
 
@@ -51,7 +59,7 @@ class CrimesByGunStolen extends React.Component<{}, CrimesByGunStolenState> {
           labels: ['Stolen Guns', 'Unknown', 'Legal Guns'],
           datasets: [
             {
-              backgroundColor: [darkPink, fadedRed, orange],
+              backgroundColor: [golden, lightBlue, darkBlue],
               data: numberOfCrimes,
             },
           ],

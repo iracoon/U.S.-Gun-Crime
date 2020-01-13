@@ -69,6 +69,7 @@ router.get('/gunDeaths', async (req: Request, res: Response) => {
         WHERE null_table.type = stolen_table.type 
         AND stolen_table.type = legal_table.type
         AND (null_killed + legal_killed + stolen_killed) > 100
+        AND (null_killed + legal_killed + stolen_killed) < 1000
         ORDER BY total DESC`
     );
     return res.status(OK).json(gunDeaths);

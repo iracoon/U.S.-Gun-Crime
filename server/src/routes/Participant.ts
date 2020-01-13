@@ -184,6 +184,23 @@ router.get(
 );
 
 /**
+ * Returns total injuries/deaths
+ */
+router.get('/:type/total', async (req: Request, res: Response) => {
+  try {
+    const total = await query(
+      `SELECT COUNT(n_killed) AS total FROM ${Incident} `
+    );
+    return res.status(OK).json(total);
+  } catch (err) {
+    logger.error(err.message, err);
+    return res.status(BAD_REQUEST).json({
+      error: err.message,
+    });
+  }
+});
+
+/**
  * Returns correlation between gun crime and relationship type
  */
 router.get('/atRiskRelationships', async (req: Request, res: Response) => {

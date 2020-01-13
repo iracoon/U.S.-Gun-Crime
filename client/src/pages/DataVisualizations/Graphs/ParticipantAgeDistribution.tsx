@@ -7,6 +7,7 @@ import {
   orange,
   darkerPurple,
   darkPurple,
+  lightestRed,
 } from '../chartColors';
 import LoadingSpin from 'components/LoadingSpin/LoadingSpin';
 import * as chartjs from 'chart.js';
@@ -92,7 +93,7 @@ class ParticipantAgeDistribution extends React.Component<
                 darkPurple,
                 darkPink,
                 fadedRed,
-                orange,
+                lightestRed,
               ],
               data: participantAgeDistributionData,
             },

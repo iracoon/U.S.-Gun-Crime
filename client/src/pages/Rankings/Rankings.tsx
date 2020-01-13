@@ -17,26 +17,6 @@ class Rankings extends React.Component {
     return (
       <div>
         <Page title={PageEnum.RANKINGS.title}>
-          {/* <Collapse>
-            <Panel header="Disclaimers" key="1">
-              <ul>
-                <li>
-                  2 incidents (includes the Las Vegas shooting) were manually
-                  removed from the original dataset due to issues while data
-                  gathering.
-                </li>
-                <li>
-                  The list of incidents from 2013 and 2018 are incomplete.
-                </li>
-                <li>
-                  Exact numbers are not provided for the Deaths Per Capita by
-                  State ranking. For more specific information, please use the{' '}
-                  <Link to={PageEnum.DEEP_DIVE.url}>Search Tool.</Link>
-                </li>
-              </ul>
-            </Panel>
-          </Collapse>
-          <br /> */}
           <Tabs defaultActiveKey="1">
             <TabPane tab="Deaths Per Capita by State" key="1">
               <DeadliestStates />
@@ -51,6 +31,14 @@ class Rankings extends React.Component {
               <AtRiskRelationships />
             </TabPane>
           </Tabs>
+          <br />
+          <br />
+          <p>
+            *Disclaimer: Some data is missing from the years 2013 and 2018.
+            Exact numbers are not provided for the Deaths Per Capita by State
+            ranking. For more specific information, please use the{' '}
+            <Link to={PageEnum.DEEP_DIVE.url}>Search Tool.</Link>
+          </p>
         </Page>
       </div>
     );

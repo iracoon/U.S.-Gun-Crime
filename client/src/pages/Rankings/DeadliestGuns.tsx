@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { fadedRed } from '../DataVisualizations/chartColors';
+import { fadedRed, darkBlue } from '../DataVisualizations/chartColors';
 import HorizontalBarGraph from './HorizontalBarGraph';
 import * as chartjs from 'chart.js';
 import { ChartData } from 'react-chartjs-2';

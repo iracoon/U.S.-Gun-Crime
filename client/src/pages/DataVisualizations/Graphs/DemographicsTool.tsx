@@ -1,11 +1,12 @@
 import React from 'react';
 import axios from 'axios';
-import { ChartData, Pie } from 'react-chartjs-2';
+import { ChartData, Pie, Doughnut } from 'react-chartjs-2';
 import { Card, Button } from 'antd';
 import { Select } from 'antd';
-import states from '../StateComparisons/states';
-import LoadingSpin from '../../../../components/LoadingSpin/LoadingSpin';
+import states from './StateComparisons/states';
+import LoadingSpin from '../../../components/LoadingSpin/LoadingSpin';
 import * as chartjs from 'chart.js';
+import { darkPinkSolid, fadedRedSolid } from '../chartColors';
 
 interface DemographicsToolProps {
   className: string;
@@ -35,8 +36,8 @@ class DemographicsTool extends React.Component<
       type: 'n_killed',
       genders: ['All..', 'Male', 'Female'],
       gender: "'M'",
-      age_low: '19',
-      age_high: '25',
+      age_low: 'NULL',
+      age_high: 'NULL',
       ageGroups: [
         'All..',
         'Ages 0–9',
@@ -77,22 +78,22 @@ class DemographicsTool extends React.Component<
       response.data.forEach((p: { DEATHS: number }) => reqData.push(p.DEATHS));
 
       const response2 = await axios.get(
-        `/api/participant/NULL/NULL/NULL/NULL/${this.state.type}/demographics`
+        `/api/participant/${this.state.type}/total`
       );
 
-      response2.data.forEach((p: { DEATHS: number }) =>
-        reqData.push(p.DEATHS - reqData[0])
+      response2.data.forEach((p: { TOTAL: number }) =>
+        reqData.push(p.TOTAL - reqData[0])
       );
 
       this.setState({
         ...this.state,
         isLoading: false,
         data: {
-          labels: ['you', 'everyone'],
+          labels: ['selected', 'others'],
           datasets: [
             {
               label: 'Gun Crime Demographics',
-              backgroundColor: ['rgba(247, 143, 76, 0.2)', '#000000'],
+              backgroundColor: [fadedRedSolid, darkPinkSolid],
               data: reqData,
             },
           ],
@@ -172,76 +173,74 @@ class DemographicsTool extends React.Component<
   public render() {
     return (
       <section className={this.props.className}>
-        <Card title="Demographics Tool">
-          <div style={{ marginBottom: '20px' }}>
-            <Select
-              onChange={this.onStateChange}
-              defaultValue={'Alabama'}
-              showSearch={true}
-              style={{ width: 150 }}
-            >
-              {this.state.states_copy.map((item, index) => (
-                <Select.Option value={item} key={`${index}1`}>
-                  {item}
-                </Select.Option>
-              ))}
-            </Select>
-            &nbsp;&nbsp;
-            <Select
-              onChange={this.onGenderChange}
-              defaultValue={'Male'}
-              showSearch={true}
-              style={{ width: 150 }}
-            >
-              {this.state.genders.map((item, index) => (
-                <Select.Option value={item} key={`${index}1`}>
-                  {item}
-                </Select.Option>
-              ))}
-            </Select>
-            &nbsp;&nbsp;
-            <Select
-              onChange={this.onAgeChange}
-              defaultValue={'Ages 19–25'}
-              showSearch={true}
-              style={{ width: 150 }}
-            >
-              {this.state.ageGroups.map((item, index) => (
-                <Select.Option value={item} key={`${index}1`}>
-                  {item}
-                </Select.Option>
-              ))}
-            </Select>
-            <br />
-            <br />
-            <Button
-              onClick={() => this.onButtonClick('n_killed')}
-              type="primary"
-              size="large"
-              shape="round"
-            >
-              Killed
-            </Button>
-            &nbsp;&nbsp;
-            <Button
-              onClick={() => this.onButtonClick('n_injured')}
-              type="primary"
-              size="large"
-              shape="round"
-            >
-              Injured
-            </Button>
-          </div>
-          <LoadingSpin spinning={this.state.isLoading}>
-            <Pie
-              options={{
-                responsive: true,
-              }}
-              data={this.state.data}
-              redraw={false}
-            />
-          </LoadingSpin>
-        </Card>
+        <div style={{ marginBottom: '20px' }}>
+          <Select
+            onChange={this.onStateChange}
+            defaultValue={'California'}
+            showSearch={true}
+            style={{ width: 150 }}
+          >
+            {this.state.states_copy.map((item, index) => (
+              <Select.Option value={item} key={`${index}1`}>
+                {item}
+              </Select.Option>
+            ))}
+          </Select>
+          &nbsp;&nbsp;
+          <Select
+            onChange={this.onGenderChange}
+            defaultValue={'Male'}
+            showSearch={true}
+            style={{ width: 150 }}
+          >
+            {this.state.genders.map((item, index) => (
+              <Select.Option value={item} key={`${index}1`}>
+                {item}
+              </Select.Option>
+            ))}
+          </Select>
+          &nbsp;&nbsp;
+          <Select
+            onChange={this.onAgeChange}
+            defaultValue={'All..'}
+            showSearch={true}
+            style={{ width: 150 }}
+          >
+            {this.state.ageGroups.map((item, index) => (
+              <Select.Option value={item} key={`${index}1`}>
+                {item}
+              </Select.Option>
+            ))}
+          </Select>
+          <br />
+          <br />
+          <Button
+            onClick={() => this.onButtonClick('n_killed')}
+            type="primary"
+            size="large"
+            shape="round"
+          >
+            Killed
+          </Button>
+          &nbsp;&nbsp;
+          <Button
+            onClick={() => this.onButtonClick('n_injured')}
+            type="primary"
+            size="large"
+            shape="round"
+          >
+            Injured
+          </Button>
+        </div>
+        <LoadingSpin spinning={this.state.isLoading}>
+          <Doughnut
+            options={{
+              responsive: true,
+            }}
+            data={this.state.data}
+            redraw={false}
+          />
+        </LoadingSpin>
       </section>
     );
   }
