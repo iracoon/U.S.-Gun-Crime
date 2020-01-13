@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Page from 'components/Layout/Page/Page';
 import { PageEnum } from 'pages/PageEnum';
 import NationalTrends from './Graphs/NationalTrends';
+import PopulationTrends from './Graphs/PopulationTrends';
 import StateComparisons from './Graphs/StateComparisons/StateComparisons';
 import DemographicsTool from './Graphs/DemographicsTool/DemographicsTool';
 import { Collapse, Switch, Card, Alert, Tabs } from 'antd';
@@ -75,6 +76,7 @@ const DataVisualizations = () => {
           <Card title="National Gun Deaths by Year">
             <div className={styles.responsiveCard}>
               <NationalTrends />
+              <PopulationTrends />
               <div>
                 According to the U.S. Census Bureau, the national population has
                 increased approximately 2.12 percent from 318.39 million in 2014

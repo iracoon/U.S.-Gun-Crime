@@ -2,21 +2,21 @@ import React from 'react';
 import axios from 'axios';
 import { Line, ChartData } from 'react-chartjs-2';
 import { primaryBlue } from '../chartColors';
-import LoadingSpin from 'components/LoadingSpin/LoadingSpin';
+import LoadingSpin from '../../../components/LoadingSpin/LoadingSpin';
 import * as chartjs from 'chart.js';
 
-interface NationalTrendsState {
+interface PopulationTrendsState {
   isLoading: boolean;
-  nationalTrendsData: number[];
+  PopulationTrendsData: number[];
   data: ChartData<chartjs.ChartData>;
 }
 
-class NationalTrends extends React.Component<{}, NationalTrendsState> {
+class PopulationTrends extends React.Component<{}, PopulationTrendsState> {
   public constructor(props: {}) {
     super(props);
     this.state = {
       isLoading: true,
-      nationalTrendsData: [],
+      PopulationTrendsData: [],
       data: {
         labels: [],
         datasets: [
@@ -31,30 +31,30 @@ class NationalTrends extends React.Component<{}, NationalTrendsState> {
   }
 
   public componentDidMount() {
-    this.fetchNationalTrendsData();
+    this.fetchPopulationTrendsData();
   }
 
-  private fetchNationalTrendsData = async () => {
+  private fetchPopulationTrendsData = async () => {
     try {
-      const response = await axios.get('/api/incident/deathsPerYear');
+      const response = await axios.get('/api/incident/populationPerYear');
 
-      const nationalTrendsData: number[] = [];
+      const PopulationTrendsData: number[] = [];
 
-      response.data.forEach((p: { DEATHS: number }) =>
-        nationalTrendsData.push(p.DEATHS)
+      response.data.forEach((p: { POPULATIONS: number }) =>
+        PopulationTrendsData.push(p.POPULATIONS)
       );
 
       this.setState({
         ...this.state,
         isLoading: false,
-        nationalTrendsData,
+        PopulationTrendsData,
         data: {
           labels: ['2013', '2014', '2015', '2016', '2017', '2018'],
           datasets: [
             {
               label: '',
               backgroundColor: primaryBlue,
-              data: nationalTrendsData,
+              data: PopulationTrendsData,
             },
           ],
         },
@@ -84,4 +84,4 @@ class NationalTrends extends React.Component<{}, NationalTrendsState> {
   }
 }
 
-export default NationalTrends;
+export default PopulationTrends;
