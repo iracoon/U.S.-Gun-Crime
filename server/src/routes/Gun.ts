@@ -45,6 +45,42 @@ router.get(
 );
 
 /**
+ * Gun Deaths
+ */
+router.get('/gunDeaths', async (req: Request, res: Response) => {
+  try {
+    const gunDeaths = await query(
+      `SELECT null_table.type, null_killed, stolen_killed, legal_killed, (null_killed + legal_killed + stolen_killed) as total FROM
+        (SELECT type, SUM(n_killed) AS null_killed FROM ${Incident}, ${Gun}
+                WHERE ${Incident}.id = ${Gun}.incident_id
+                AND type IS NOT NULL
+                AND stolen IS NULL
+                GROUP BY type) null_table,
+        (SELECT type, SUM(n_killed) AS stolen_killed FROM ${Incident}, ${Gun}
+                WHERE ${Incident}.id = ${Gun}.incident_id
+                AND type IS NOT NULL
+                AND stolen=1
+                GROUP BY type) stolen_table,
+        (SELECT type, SUM(n_killed) AS legal_killed FROM ${Incident}, ${Gun}
+                WHERE ${Incident}.id = ${Gun}.incident_id
+                AND type IS NOT NULL
+                AND stolen=0
+                GROUP BY type) legal_table
+        WHERE null_table.type = stolen_table.type 
+        AND stolen_table.type = legal_table.type
+        AND (null_killed + legal_killed + stolen_killed) > 100
+        ORDER BY total DESC`
+    );
+    return res.status(OK).json(gunDeaths);
+  } catch (err) {
+    logger.error(err.message, err);
+    return res.status(BAD_REQUEST).json({
+      error: err.message,
+    });
+  }
+});
+
+/**
  * Returns number of gun deaths caused by different gun types
  */
 router.get('/rankedByDeaths', async (req: Request, res: Response) => {

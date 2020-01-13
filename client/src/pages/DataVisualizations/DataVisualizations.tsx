@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Page from 'components/Layout/Page/Page';
 import { PageEnum } from 'pages/PageEnum';
 import NationalTrends from './Graphs/NationalTrends';
+import GunDeaths from './Graphs/GunDeaths';
 import PopulationTrends from './Graphs/PopulationTrends';
 import StateComparisons from './Graphs/StateComparisons/StateComparisons';
 import DemographicsTool from './Graphs/DemographicsTool/DemographicsTool';
@@ -121,6 +122,11 @@ const DataVisualizations = () => {
                 gun crimes than legally owned guns, which usually require
                 background checks before purchase.
               </div>
+            </div>
+          </Card>
+          <Card title="Incidents Caused by Stolen vs. Owned Guns">
+            <div className={styles.responsiveCard}>
+              <GunDeaths />
             </div>
           </Card>
         </section>
