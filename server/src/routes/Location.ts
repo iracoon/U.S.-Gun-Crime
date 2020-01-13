@@ -31,23 +31,6 @@ router.get('/states', async (req: Request, res: Response) => {
 });
 
 /**
- * Returns all cities/counties for the specified state.
- */
-router.get('/:state/citiesAndCounties', async (req: Request, res: Response) => {
-  try {
-    const citiesOrCounties = await query(
-      `SELECT DISTINCT city_or_county FROM ${Location} WHERE state='${req.params.state}' ORDER BY city_or_county`
-    );
-    return res.status(OK).json(citiesOrCounties);
-  } catch (err) {
-    logger.error(err.message, err);
-    return res.status(BAD_REQUEST).json({
-      error: err.message,
-    });
-  }
-});
-
-/**
  * Returns deaths per year in a state: 2013, 2014, 2015, 2016, 2017, 2018
  */
 router.get('/:state/deathsPerYear', async (req: Request, res: Response) => {
@@ -71,63 +54,21 @@ router.get('/:state/deathsPerYear', async (req: Request, res: Response) => {
 });
 
 /**
- * Trends Tool
+ * Returns all cities/counties for the specified state.
  */
-router.get(
-  '/:state/:age_low/:age_high/:gender/:type/trends',
-  async (req: Request, res: Response) => {
-    try {
-      const deathsPerYear = await query(
-        `SELECT sum(${req.params.type}) AS DEATHS FROM
-      ((SELECT * FROM ${Incident}, ${Location}, ${Participant}
-      WHERE 
-      (${Incident}.latitude = ${Location}.latitude
-      AND ${Incident}.longitude = ${Location}.longitude
-      AND ${Incident}.id = ${Participant}.incident_id
-      AND ${req.params.state} IS NULL)
-      OR 
-      (${Incident}.latitude = ${Location}.latitude
-      AND ${Incident}.longitude = ${Location}.longitude
-      AND ${Incident}.id = ${Participant}.incident_id
-      AND state = ${req.params.state}))
-      INTERSECT
-      (SELECT * FROM ${Incident}, ${Location}, ${Participant}
-      WHERE 
-      (${Incident}.latitude = ${Location}.latitude
-      AND ${Incident}.longitude = ${Location}.longitude
-      AND ${Incident}.id = ${Participant}.incident_id
-      AND ${req.params.gender} IS NULL)
-      OR 
-      (${Incident}.latitude = ${Location}.latitude
-      AND ${Incident}.longitude = ${Location}.longitude
-      AND ${Incident}.id = ${Participant}.incident_id
-      AND gender = ${req.params.gender}))
-      INTERSECT
-      (SELECT * FROM ${Incident}, ${Location}, ${Participant}
-      WHERE 
-      (${Incident}.latitude = ${Location}.latitude
-      AND ${Incident}.longitude = ${Location}.longitude
-      AND ${Incident}.id = ${Participant}.incident_id
-      AND ${req.params.age_low} IS NULL
-      AND ${req.params.age_high} IS NULL)
-      OR 
-      (${Incident}.latitude = ${Location}.latitude
-      AND ${Incident}.longitude = ${Location}.longitude
-      AND ${Incident}.id = ${Participant}.incident_id
-      AND age >= ${req.params.age_low}
-      AND age <= ${req.params.age_high})))
-      GROUP BY extract(year FROM i_date)
-      ORDER BY extract(year FROM i_date) ASC`
-      );
-      return res.status(OK).json(deathsPerYear);
-    } catch (err) {
-      logger.error(err.message, err);
-      return res.status(BAD_REQUEST).json({
-        error: err.message,
-      });
-    }
+router.get('/:state/citiesAndCounties', async (req: Request, res: Response) => {
+  try {
+    const citiesOrCounties = await query(
+      `SELECT DISTINCT city_or_county FROM ${Location} WHERE state='${req.params.state}' ORDER BY city_or_county`
+    );
+    return res.status(OK).json(citiesOrCounties);
+  } catch (err) {
+    logger.error(err.message, err);
+    return res.status(BAD_REQUEST).json({
+      error: err.message,
+    });
   }
-);
+});
 
 /**
  * Ranks the states by death per capita (scaled up).

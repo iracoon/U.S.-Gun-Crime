@@ -2,7 +2,7 @@ import { logger } from '@shared';
 import { Request, Response, Router } from 'express';
 import { BAD_REQUEST, OK } from 'http-status-codes';
 import query from 'src/query/query';
-import { Participant, Incident } from 'src/table';
+import { Participant, Incident, Location } from 'src/table';
 
 // Init shared
 const router = Router();
@@ -125,6 +125,63 @@ router.get('/ageDistribution/:type', async (req: Request, res: Response) => {
     });
   }
 });
+
+/**
+ * Demographics Tool
+ */
+router.get(
+  '/:state/:age_low/:age_high/:gender/:type/demographics',
+  async (req: Request, res: Response) => {
+    try {
+      const demographicsTool = await query(
+        `SELECT sum(${req.params.type}) AS DEATHS FROM
+      ((SELECT * FROM ${Incident}, ${Location}, ${Participant}
+      WHERE 
+      (${Incident}.latitude = ${Location}.latitude
+      AND ${Incident}.longitude = ${Location}.longitude
+      AND ${Incident}.id = ${Participant}.incident_id
+      AND ${req.params.state} IS NULL)
+      OR 
+      (${Incident}.latitude = ${Location}.latitude
+      AND ${Incident}.longitude = ${Location}.longitude
+      AND ${Incident}.id = ${Participant}.incident_id
+      AND state = ${req.params.state}))
+      INTERSECT
+      (SELECT * FROM ${Incident}, ${Location}, ${Participant}
+      WHERE 
+      (${Incident}.latitude = ${Location}.latitude
+      AND ${Incident}.longitude = ${Location}.longitude
+      AND ${Incident}.id = ${Participant}.incident_id
+      AND ${req.params.gender} IS NULL)
+      OR 
+      (${Incident}.latitude = ${Location}.latitude
+      AND ${Incident}.longitude = ${Location}.longitude
+      AND ${Incident}.id = ${Participant}.incident_id
+      AND gender = ${req.params.gender}))
+      INTERSECT
+      (SELECT * FROM ${Incident}, ${Location}, ${Participant}
+      WHERE 
+      (${Incident}.latitude = ${Location}.latitude
+      AND ${Incident}.longitude = ${Location}.longitude
+      AND ${Incident}.id = ${Participant}.incident_id
+      AND ${req.params.age_low} IS NULL
+      AND ${req.params.age_high} IS NULL)
+      OR 
+      (${Incident}.latitude = ${Location}.latitude
+      AND ${Incident}.longitude = ${Location}.longitude
+      AND ${Incident}.id = ${Participant}.incident_id
+      AND age >= ${req.params.age_low}
+      AND age <= ${req.params.age_high})))`
+      );
+      return res.status(OK).json(demographicsTool);
+    } catch (err) {
+      logger.error(err.message, err);
+      return res.status(BAD_REQUEST).json({
+        error: err.message,
+      });
+    }
+  }
+);
 
 /**
  * Returns correlation between gun crime and relationship type

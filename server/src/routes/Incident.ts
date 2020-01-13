@@ -8,6 +8,7 @@ import {
   Gun,
   Incident,
   Location,
+  StatePopulation,
 } from 'src/table';
 
 // Init shared
@@ -87,17 +88,37 @@ router.get('/characteristics', async (req: Request, res: Response) => {
 });
 
 /**
- * Returns deaths per year: 2013, 2014, 2015, 2016, 2017, 2018
+ * Returns casualties per year: 2013, 2014, 2015, 2016, 2017, 2018
  */
-router.get('/deathsPerYear', async (req: Request, res: Response) => {
+router.get('/casualtiesPerYear', async (req: Request, res: Response) => {
   try {
-    const deathsPerYear = await query(
-      `SELECT SUM(n_killed) AS deaths
+    const casualtiesPerYear = await query(
+      `SELECT SUM(n_killed) + SUM(n_injured) AS casualties
       FROM ${Incident}
       GROUP BY extract(year FROM i_date)
       ORDER BY extract(year FROM i_date) ASC`
     );
-    return res.status(OK).json(deathsPerYear);
+    return res.status(OK).json(casualtiesPerYear);
+  } catch (err) {
+    logger.error(err.message, err);
+    return res.status(BAD_REQUEST).json({
+      error: err.message,
+    });
+  }
+});
+
+/**
+ * Returns national population per year: 2013, 2014, 2015, 2016, 2017, 2018
+ */
+router.get('/populationPerYear', async (req: Request, res: Response) => {
+  try {
+    const populationPerYear = await query(
+      `SELECT SUM(population) AS populations
+      FROM ${StatePopulation}
+      GROUP BY year
+      ORDER BY year ASC`
+    );
+    return res.status(OK).json(populationPerYear);
   } catch (err) {
     logger.error(err.message, err);
     return res.status(BAD_REQUEST).json({

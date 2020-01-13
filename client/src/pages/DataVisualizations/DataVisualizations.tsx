@@ -3,7 +3,7 @@ import Page from 'components/Layout/Page/Page';
 import { PageEnum } from 'pages/PageEnum';
 import NationalTrends from './Graphs/NationalTrends';
 import StateComparisons from './Graphs/StateComparisons/StateComparisons';
-import TrendsTool from './Graphs/TrendsTool/TrendsTool';
+import DemographicsTool from './Graphs/DemographicsTool/DemographicsTool';
 import { Collapse, Switch, Card, Alert, Tabs } from 'antd';
 import styles from './DataVisualizations.module.less';
 import CrimesByGender from './Graphs/CrimesByGender';
@@ -25,7 +25,7 @@ const DataVisualizations = () => {
 
   return (
     <Page title={PageEnum.DATA_VISUALIZATIONS.title}>
-      <Collapse defaultActiveKey={['2']} style={{ marginBottom: '50px' }}>
+      {/* <Collapse defaultActiveKey={['2']} style={{ marginBottom: '50px' }}>
         <Panel header="Disclaimers" key="1">
           <ul>
             <li>
@@ -62,19 +62,15 @@ const DataVisualizations = () => {
             </div>
           </section>
         </Panel>
-      </Collapse>
+      </Collapse> */}
 
       {showingTrends ? (
         <section className={styles.dataVisualization}>
           <h2>Gun Crime Trends</h2>
-          <Tabs defaultActiveKey="1">
-            <TabPane tab="Deaths Per Capita by State" key="1">
-              <TrendsTool className={styles.dataVisualization} />
-            </TabPane>
-            <TabPane tab="Deadliest Incidents" key="2">
-              <StateComparisons className={styles.dataVisualization} />
-            </TabPane>
-          </Tabs>
+
+          <DemographicsTool className={styles.dataVisualization} />
+
+          <StateComparisons className={styles.dataVisualization} />
 
           <Card title="National Gun Deaths by Year">
             <div className={styles.responsiveCard}>

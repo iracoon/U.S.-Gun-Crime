@@ -7,7 +7,6 @@ import * as chartjs from 'chart.js';
 
 interface NationalTrendsState {
   isLoading: boolean;
-  nationalTrendsData: number[];
   data: ChartData<chartjs.ChartData>;
 }
 
@@ -16,7 +15,6 @@ class NationalTrends extends React.Component<{}, NationalTrendsState> {
     super(props);
     this.state = {
       isLoading: true,
-      nationalTrendsData: [],
       data: {
         labels: [],
         datasets: [
@@ -36,24 +34,35 @@ class NationalTrends extends React.Component<{}, NationalTrendsState> {
 
   private fetchNationalTrendsData = async () => {
     try {
-      const response = await axios.get('/api/incident/deathsPerYear');
+      const response1 = await axios.get('/api/incident/casualtiesPerYear');
 
-      const nationalTrendsData: number[] = [];
-      response.data.forEach((p: { DEATHS: number }) =>
-        nationalTrendsData.push(p.DEATHS)
+      const casualtiesTrendsData: number[] = [];
+      response1.data.forEach((p: { CASUALTIES: number }) =>
+        casualtiesTrendsData.push(p.CASUALTIES)
+      );
+
+      const response2 = await axios.get('/api/incident/populationPerYear');
+
+      const populationTrendsData: number[] = [];
+      response2.data.forEach((p: { POPULATIONS: number }) =>
+        populationTrendsData.push(p.POPULATIONS)
       );
 
       this.setState({
         ...this.state,
         isLoading: false,
-        nationalTrendsData,
         data: {
           labels: ['2013', '2014', '2015', '2016', '2017', '2018'],
           datasets: [
             {
-              label: '',
-              backgroundColor: primaryBlue,
-              data: nationalTrendsData,
+              label: 'Gun deaths by year in ',
+              backgroundColor: 'rgba(247, 143, 76, 0.2)',
+              data: casualtiesTrendsData,
+            },
+            {
+              label: 'Gun deaths by year in ',
+              backgroundColor: 'rgba(60, 102, 163, 0.8)',
+              data: populationTrendsData,
             },
           ],
         },

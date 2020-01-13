@@ -57,7 +57,7 @@ class StateComparisons extends React.Component<
       );
 
       const response2 = await axios.get(
-        `/api/location/${this.state.stateTwo}/deathsPerYear/`
+        `/api/location/${this.state.stateTwo}/deathsPerYear`
       );
 
       const deathsPerYear2: number[] = [];

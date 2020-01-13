@@ -1,17 +1,17 @@
 import React from 'react';
 import axios from 'axios';
-import { Line, ChartData } from 'react-chartjs-2';
+import { ChartData, Pie } from 'react-chartjs-2';
 import { Card, Button } from 'antd';
 import { Select } from 'antd';
 import states from '../StateComparisons/states';
 import LoadingSpin from '../../../../components/LoadingSpin/LoadingSpin';
 import * as chartjs from 'chart.js';
 
-interface TrendsToolProps {
+interface DemographicsToolProps {
   className: string;
 }
 
-interface TrendsToolState {
+interface DemographicsToolState {
   type: string;
   state: string;
   states_copy: string[];
@@ -24,8 +24,11 @@ interface TrendsToolState {
   data: ChartData<chartjs.ChartData>;
 }
 
-class TrendsTool extends React.Component<TrendsToolProps, TrendsToolState> {
-  public constructor(props: TrendsToolProps) {
+class DemographicsTool extends React.Component<
+  DemographicsToolProps,
+  DemographicsToolState
+> {
+  public constructor(props: DemographicsToolProps) {
     super(props);
     this.state = {
       states_copy: states.slice(),
@@ -61,30 +64,36 @@ class TrendsTool extends React.Component<TrendsToolProps, TrendsToolState> {
   }
 
   public componentDidMount() {
-    this.fetchTrendsToolData();
+    this.fetchDemographicsToolData();
   }
 
-  private fetchTrendsToolData = async () => {
+  private fetchDemographicsToolData = async () => {
     try {
       const response = await axios.get(
-        `/api/location/${this.state.state}/${this.state.age_low}/${this.state.age_high}/${this.state.gender}/${this.state.type}/trends`
+        `/api/participant/${this.state.state}/${this.state.age_low}/${this.state.age_high}/${this.state.gender}/${this.state.type}/demographics`
       );
 
-      const deathsPerYear: number[] = [];
-      response.data.forEach((p: { DEATHS: number }) =>
-        deathsPerYear.push(p.DEATHS)
+      const reqData: number[] = [];
+      response.data.forEach((p: { DEATHS: number }) => reqData.push(p.DEATHS));
+
+      const response2 = await axios.get(
+        `/api/participant/NULL/NULL/NULL/NULL/${this.state.type}/demographics`
+      );
+
+      response2.data.forEach((p: { DEATHS: number }) =>
+        reqData.push(p.DEATHS - reqData[0])
       );
 
       this.setState({
         ...this.state,
         isLoading: false,
         data: {
-          labels: ['2013', '2014', '2015', '2016', '2017', '2018'],
+          labels: ['you', 'everyone'],
           datasets: [
             {
-              label: 'Gun Crime Trends',
-              backgroundColor: 'rgba(247, 143, 76, 0.2)',
-              data: deathsPerYear,
+              label: 'Gun Crime Demographics',
+              backgroundColor: ['rgba(247, 143, 76, 0.2)', '#000000'],
+              data: reqData,
             },
           ],
         },
@@ -99,7 +108,7 @@ class TrendsTool extends React.Component<TrendsToolProps, TrendsToolState> {
       type: value,
       isLoading: true,
     });
-    this.fetchTrendsToolData();
+    this.fetchDemographicsToolData();
   };
 
   public onStateChange = (value: string) => {
@@ -163,7 +172,7 @@ class TrendsTool extends React.Component<TrendsToolProps, TrendsToolState> {
   public render() {
     return (
       <section className={this.props.className}>
-        <Card title="Trends Tool">
+        <Card title="Demographics Tool">
           <div style={{ marginBottom: '20px' }}>
             <Select
               onChange={this.onStateChange}
@@ -224,7 +233,7 @@ class TrendsTool extends React.Component<TrendsToolProps, TrendsToolState> {
             </Button>
           </div>
           <LoadingSpin spinning={this.state.isLoading}>
-            <Line
+            <Pie
               options={{
                 responsive: true,
               }}
@@ -238,4 +247,4 @@ class TrendsTool extends React.Component<TrendsToolProps, TrendsToolState> {
   }
 }
 
-export default TrendsTool;
+export default DemographicsTool;

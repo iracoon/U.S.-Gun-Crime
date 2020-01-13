@@ -17,7 +17,7 @@ class Rankings extends React.Component {
     return (
       <div>
         <Page title={PageEnum.RANKINGS.title}>
-          <Collapse>
+          {/* <Collapse>
             <Panel header="Disclaimers" key="1">
               <ul>
                 <li>
@@ -36,7 +36,7 @@ class Rankings extends React.Component {
               </ul>
             </Panel>
           </Collapse>
-          <br />
+          <br /> */}
           <Tabs defaultActiveKey="1">
             <TabPane tab="Deaths Per Capita by State" key="1">
               <DeadliestStates />
