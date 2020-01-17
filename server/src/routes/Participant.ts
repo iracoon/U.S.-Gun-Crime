@@ -145,7 +145,7 @@ router.get(
 
     try {
       const demographicsTool = await query(
-        `SELECT SUM(n_killed) AS DEATHS
+        `SELECT SUM(${req.params.type}) AS DEATHS
         FROM ${Incident}, ${Location}, ${Participant}
         WHERE 
         ${Incident}.latitude = ${Location}.latitude
