@@ -59,7 +59,7 @@ class CrimesByGunStolen extends React.Component<{}, CrimesByGunStolenState> {
           labels: ['Stolen Guns', 'Unknown', 'Legal Guns'],
           datasets: [
             {
-              backgroundColor: [golden, lightBlue, darkBlue],
+              backgroundColor: [lightBlue, darkBlue, golden],
               data: numberOfCrimes,
             },
           ],

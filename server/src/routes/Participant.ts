@@ -132,46 +132,28 @@ router.get('/ageDistribution/:type', async (req: Request, res: Response) => {
 router.get(
   '/:state/:age_low/:age_high/:gender/:type/demographics',
   async (req: Request, res: Response) => {
+    const age_param =
+      req.params.age_low == 'NULL'
+        ? ` `
+        : ` AND age >= ${req.params.age_low} AND age <= ${req.params.age_high} `;
+    const gender_param =
+      req.params.gender == 'NULL'
+        ? ` `
+        : ` AND gender =  ${req.params.gender} `;
+    const state_param =
+      req.params.state == 'NULL' ? ` ` : ` AND state =  ${req.params.state} `;
+
     try {
       const demographicsTool = await query(
-        `SELECT sum(${req.params.type}) AS DEATHS FROM
-      ((SELECT * FROM ${Incident}, ${Location}, ${Participant}
-      WHERE 
-      (${Incident}.latitude = ${Location}.latitude
-      AND ${Incident}.longitude = ${Location}.longitude
-      AND ${Incident}.id = ${Participant}.incident_id
-      AND ${req.params.state} IS NULL)
-      OR 
-      (${Incident}.latitude = ${Location}.latitude
-      AND ${Incident}.longitude = ${Location}.longitude
-      AND ${Incident}.id = ${Participant}.incident_id
-      AND state = ${req.params.state}))
-      INTERSECT
-      (SELECT * FROM ${Incident}, ${Location}, ${Participant}
-      WHERE 
-      (${Incident}.latitude = ${Location}.latitude
-      AND ${Incident}.longitude = ${Location}.longitude
-      AND ${Incident}.id = ${Participant}.incident_id
-      AND ${req.params.gender} IS NULL)
-      OR 
-      (${Incident}.latitude = ${Location}.latitude
-      AND ${Incident}.longitude = ${Location}.longitude
-      AND ${Incident}.id = ${Participant}.incident_id
-      AND gender = ${req.params.gender}))
-      INTERSECT
-      (SELECT * FROM ${Incident}, ${Location}, ${Participant}
-      WHERE 
-      (${Incident}.latitude = ${Location}.latitude
-      AND ${Incident}.longitude = ${Location}.longitude
-      AND ${Incident}.id = ${Participant}.incident_id
-      AND ${req.params.age_low} IS NULL
-      AND ${req.params.age_high} IS NULL)
-      OR 
-      (${Incident}.latitude = ${Location}.latitude
-      AND ${Incident}.longitude = ${Location}.longitude
-      AND ${Incident}.id = ${Participant}.incident_id
-      AND age >= ${req.params.age_low}
-      AND age <= ${req.params.age_high})))`
+        `SELECT SUM(n_killed) AS DEATHS
+        FROM ${Incident}, ${Location}, ${Participant}
+        WHERE 
+        ${Incident}.latitude = ${Location}.latitude
+        AND ${Incident}.longitude = ${Location}.longitude
+        AND ${Incident}.id = ${Participant}.incident_id` +
+          age_param +
+          gender_param +
+          state_param
       );
       return res.status(OK).json(demographicsTool);
     } catch (err) {
